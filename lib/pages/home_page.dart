@@ -1,7 +1,6 @@
 import 'package:carpool_training/pages/home_pages/all_rides_page.dart';
 import 'package:carpool_training/pages/home_pages/create_ride_page.dart';
 import 'package:carpool_training/pages/home_pages/my_profile_page.dart';
-import 'package:carpool_training/style.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,8 +21,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: uniPoolAppBar(appBarTitle: "UniPool"),
-      body: IndexedStack(index: currentIndex, children: homePages),
+      appBar: AppBar(title: Text('Kongsi Kereta')),
+      //body: IndexedStack(index: currentIndex, children: homePages),
+      body: AnimatedSwitcher(
+        duration: Duration(milliseconds: 200),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        child: Container(
+          key: ValueKey(currentIndex),
+          child: homePages[currentIndex],
+        ),
+      ),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,

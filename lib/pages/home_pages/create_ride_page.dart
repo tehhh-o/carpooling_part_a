@@ -1,6 +1,6 @@
+import 'package:carpool_training/app_theme.dart';
 import 'package:carpool_training/modules/place.dart';
 import 'package:carpool_training/pages/widgets/pick_location_dialog.dart';
-import 'package:carpool_training/style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -80,45 +80,48 @@ class _CreateRidePageState extends State<CreateRidePage> {
 
   @override
   Widget build(BuildContext context) {
+    final tStyle = Theme.of(context).textTheme;
+
     return Stack(
       children: [
         SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(AppTheme.s24),
             child: Column(
               children: [
                 Form(
                   key: formKey,
                   child: Container(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(AppTheme.s12),
                     decoration: BoxDecoration(
                       border: BoxBorder.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(7),
+                      borderRadius: BorderRadius.circular(AppTheme.r8),
                       gradient: LinearGradient(
-                        colors: cardGradient,
+                        colors: AppTheme.cardGradient,
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Create A Ride',
-                          style: TextStyle(
-                            color: Colors.green[700],
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Create A Ride',
+                            style: tStyle.headlineSmall,
                           ),
                         ),
-                        SizedBox(height: 20),
-                        Text('Origin Location'),
+                        SizedBox(height: AppTheme.s20),
+                        Text('Origin Location', style: tStyle.titleMedium),
                         TextFormField(
                           controller: originController,
                           readOnly: true,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
                           canRequestFocus: false,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.location_on),
+                            hintText: 'eg: KLIA',
+                          ),
                           onTap: () {
                             showDialog(
                               context: context,
@@ -133,14 +136,15 @@ class _CreateRidePageState extends State<CreateRidePage> {
                             );
                           },
                         ),
-                        Text('Destination Location'),
+                        Text('Destination Location', style: tStyle.titleMedium),
                         TextFormField(
                           controller: destinationController,
                           readOnly: true,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
                           canRequestFocus: false,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.location_on),
+                            hintText: 'eg: KLCC',
+                          ),
                           onTap: () {
                             showDialog(
                               context: context,
@@ -156,20 +160,22 @@ class _CreateRidePageState extends State<CreateRidePage> {
                             );
                           },
                         ),
-                        Text('Fare Per KM'),
+                        Text('Fare Per KM', style: tStyle.titleMedium),
                         TextFormField(
                           controller: fareKmController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.monetization_on),
+                            hintText: 'RM',
                           ),
                         ),
-                        Text('Date to Move'),
+                        Text('Date to Move', style: tStyle.titleMedium),
                         TextFormField(
                           controller: dateController,
                           canRequestFocus: false,
                           readOnly: true,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.calendar_month),
+                            hintText: 'e.g. Monday, March 12 2026',
                           ),
                           onTap: () async {
                             final date = await showDatePicker(
@@ -186,13 +192,14 @@ class _CreateRidePageState extends State<CreateRidePage> {
                             }
                           },
                         ),
-                        Text('Time to Move'),
+                        Text('Time to Move', style: tStyle.titleMedium),
                         TextFormField(
                           controller: timeController,
                           canRequestFocus: false,
                           readOnly: true,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.timer),
+                            hintText: '--:--',
                           ),
                           onTap: () async {
                             final time = await showTimePicker(
@@ -236,12 +243,6 @@ class _CreateRidePageState extends State<CreateRidePage> {
                               );
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: Size(300, 30),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(4),
-                            ),
-                          ),
                           child: Text('Create'),
                         ),
                       ],

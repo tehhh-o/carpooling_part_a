@@ -1,6 +1,7 @@
+import 'package:carpool_training/app_theme.dart';
 import 'package:carpool_training/pages/login_page.dart';
 import 'package:carpool_training/pages/register/register_document.dart';
-import 'package:carpool_training/style.dart';
+import 'package:carpool_training/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -57,128 +58,241 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final tStyle = Theme.of(context).textTheme;
     return Stack(
       children: [
         Scaffold(
-          appBar: uniPoolAppBar(appBarTitle: "UniPool"),
+          appBar: AppBar(
+            centerTitle: false,
+            title: Hero(
+              tag: 'register_appbar',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Register as Driver', style: tStyle.titleLarge),
+                  Text('Step 1 of 3', style: tStyle.labelLarge),
+                ],
+              ),
+            ),
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(20),
+              child: Padding(
+                padding: EdgeInsetsGeometry.symmetric(
+                  vertical: AppTheme.s16,
+                  horizontal: AppTheme.s24,
+                ),
+                child: Hero(
+                  tag: 'progress_bar',
+                  child: LinearProgressIndicator(
+                    value: 1 / 3,
+                    minHeight: AppTheme.s8,
+                  ),
+                ),
+              ),
+            ),
+          ),
           body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      Text(
-                        'Welcome to UniPool',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 32,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        'An app that makes carpooling\neasier than before!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: BoxBorder.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 32.0,
-                            horizontal: 12,
+            padding: const EdgeInsets.all(AppTheme.s16),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Welcome to Kongsi Kereta',
+                            style: tStyle.headlineSmall,
                           ),
-                          child: Column(
+                          Text(
+                            'An app that makes carpooling\neasier than before!',
+                            textAlign: TextAlign.center,
+                            style: tStyle.titleSmall,
+                          ),
+                          SizedBox(height: AppTheme.s40),
+                          Column(
                             children: [
                               Text(
-                                "Register (3 Steps)",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 22,
-                                ),
+                                "Register (Personal Information)",
+                                style: tStyle.titleLarge,
                               ),
+                              SizedBox(height: AppTheme.s24),
                               TextFormField(
                                 controller: nameController,
                                 decoration: InputDecoration(
-                                  label: Text("Name"),
-                                  prefixIcon: Icon(Icons.person),
+                                  label: Text(
+                                    "Name",
+                                    style: tStyle.titleMedium,
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  hint: Text(
+                                    "Enter your Name",
+                                    style: tStyle.bodySmall,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.person,
+                                    color: Colors.black,
+                                  ),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter some text';
+                                    return 'Please enter your Name';
                                   }
                                   return null;
                                 },
                               ),
+                              SizedBox(height: AppTheme.r16),
                               TextFormField(
                                 controller: icController,
                                 decoration: InputDecoration(
-                                  label: Text("IC"),
-                                  prefixIcon: Icon(Icons.credit_card),
+                                  label: Text(
+                                    "IC Number",
+                                    style: tStyle.titleMedium,
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  hint: Text(
+                                    "Enter your IC Number",
+                                    style: tStyle.bodySmall,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.credit_card,
+                                    color: Colors.black,
+                                  ),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Please enter your ic";
+                                    return 'Please enter your IC';
                                   }
                                   return null;
                                 },
                               ),
-                              RadioGroup<String>(
-                                groupValue: selectedGender,
-                                onChanged: (value) =>
-                                    setState(() => selectedGender = value!),
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: 12),
-                                    Icon(Icons.wc),
-                                    SizedBox(width: 14),
-                                    Text('Gender: '),
-                                    Radio<String>(value: 'Male'),
-                                    Text('Male'),
-                                    Radio<String>(value: 'Female'),
-                                    Text('Female'),
-                                  ],
+                              SizedBox(height: AppTheme.r16),
+                              DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                  label: Text(
+                                    "Gender",
+                                    style: tStyle.titleMedium,
+                                  ),
+                                  prefixIcon: Icon(Icons.wc),
                                 ),
+                                initialValue: selectedGender,
+                                items: ['Male', 'Female'].map((String item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedGender = value!;
+                                  });
+                                },
                               ),
+                              SizedBox(height: AppTheme.r16),
                               TextFormField(
                                 controller: phoneController,
+
                                 decoration: InputDecoration(
-                                  label: Text("Phone"),
-                                  prefixIcon: Icon(Icons.phone),
+                                  label: Text(
+                                    "Phone",
+                                    style: tStyle.titleMedium,
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  hint: Text(
+                                    "Enter your Phone Number",
+                                    style: tStyle.bodySmall,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.phone,
+                                    color: Colors.black,
+                                  ),
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your Phone Number';
+                                  }
+                                  return null;
+                                },
                               ),
+                              SizedBox(height: AppTheme.r16),
                               TextFormField(
                                 controller: emailController,
                                 decoration: InputDecoration(
-                                  label: Text("Email"),
-                                  prefixIcon: Icon(Icons.email),
+                                  label: Text(
+                                    "Email",
+                                    style: tStyle.titleMedium,
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  hint: Text(
+                                    "Enter your Email",
+                                    style: tStyle.bodySmall,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.email,
+                                    color: Colors.black,
+                                  ),
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your Email';
+                                  }
+                                  return null;
+                                },
                               ),
+                              SizedBox(height: AppTheme.r16),
                               TextFormField(
                                 controller: addressController,
                                 decoration: InputDecoration(
-                                  label: Text("Address"),
-                                  prefixIcon: Icon(Icons.home),
+                                  label: Text(
+                                    "Address",
+                                    style: tStyle.titleMedium,
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  hint: Text(
+                                    "Enter your Address",
+                                    style: tStyle.bodySmall,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.home,
+                                    color: Colors.black,
+                                  ),
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your Address';
+                                  }
+                                  return null;
+                                },
                               ),
+                              SizedBox(height: AppTheme.r16),
                               TextFormField(
                                 controller: passwordController,
                                 obscureText: true,
                                 decoration: InputDecoration(
-                                  label: Text("Password"),
-                                  prefixIcon: Icon(Icons.password),
+                                  label: Text(
+                                    "Password",
+                                    style: tStyle.titleMedium,
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  hint: Text(
+                                    "Enter your Password",
+                                    style: tStyle.bodySmall,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.password,
+                                    color: Colors.black,
+                                  ),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Please enter the password.";
+                                    return 'Please enter your Password';
                                   }
                                   return null;
                                 },
@@ -189,9 +303,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   onPressed: () {
                                     Navigator.pushReplacement(
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginPage(),
-                                      ),
+                                      SlideFadeRoute(page: LoginPage()),
                                     );
                                   },
                                   child: Text(
@@ -202,58 +314,56 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                 ),
                               ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  if (formKey.currentState!.validate()) {
-                                    setState(() => isLoading = true);
-                                    await createUserWithEmailAndPassword();
-                                    await uploadUserInfoToDb();
-                                    setState(() => isLoading = false);
-                                    if (context.mounted) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text("Success"),
-                                            content: Text(
-                                              'All information submitted succssfully',
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        RegisterDocument(),
-                                                  ),
-                                                ),
-                                                child: Text('Next Step'),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  fixedSize: Size(300, 30),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      4,
-                                    ),
-                                  ),
-                                ),
-                                child: Text("Submit"),
-                              ),
                             ],
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+
+                Hero(
+                  tag: 'register_submit_button',
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTheme.s4),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          setState(() => isLoading = true);
+                          await createUserWithEmailAndPassword();
+                          await uploadUserInfoToDb();
+                          setState(() => isLoading = false);
+                          if (context.mounted) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("Success"),
+                                  content: Text(
+                                    'All information submitted succssfully',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.push(
+                                        context,
+                                        SlideFadeRoute(
+                                          page: RegisterDocument(),
+                                        ),
+                                      ),
+                                      child: Text('Next Step'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        }
+                      },
+                      child: Text("Submit"),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

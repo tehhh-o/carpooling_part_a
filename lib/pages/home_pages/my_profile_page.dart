@@ -1,3 +1,4 @@
+import 'package:carpool_training/app_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,19 +14,14 @@ class MyProfilePage extends StatefulWidget {
 class _MyProfilePageState extends State<MyProfilePage> {
   @override
   Widget build(BuildContext context) {
+    final tStyle = Theme.of(context).textTheme;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(
-              'Your Profile',
-              style: TextStyle(
-                color: Colors.green[700],
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text('Your Profile', style: tStyle.headlineSmall),
             SizedBox(height: 10),
             FutureBuilder(
               future: FirebaseFirestore.instance
@@ -74,44 +70,26 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       },
                       child: Text('Show Profile QR'),
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: AppTheme.s16),
                     Text(
                       "Welcome ${currentUser["name"]}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
+                      style: tStyle.titleLarge,
                     ),
                     Text(
                       "Email : ${currentUser["email"]}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
+                      style: tStyle.titleMedium,
                     ),
                     Text(
                       "Phone Number : ${currentUser["phone"]}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
+                      style: tStyle.titleMedium,
                     ),
                     Text(
                       "Address : ${currentUser["address"]}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
+                      style: tStyle.titleMedium,
                     ),
                     SizedBox(height: 100),
                     ElevatedButton(
                       onPressed: () => FirebaseAuth.instance.signOut(),
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(300, 30),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusGeometry.circular(4),
-                        ),
-                      ),
                       child: Text('Sign Out'),
                     ),
                     SizedBox(height: 30),

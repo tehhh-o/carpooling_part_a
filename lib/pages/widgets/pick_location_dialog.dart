@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:carpool_training/app_theme.dart';
 import 'package:carpool_training/env_variables.dart';
 import 'package:carpool_training/modules/place.dart';
-import 'package:carpool_training/style.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -49,6 +49,8 @@ class PickLocationDialogState extends State<PickLocationDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final tStyle = Theme.of(context).textTheme;
+
     return Dialog(
       child: SizedBox(
         height: MediaQuery.of(context).size.height - 250,
@@ -94,7 +96,7 @@ class PickLocationDialogState extends State<PickLocationDialog> {
                             itemBuilder: (context, index) {
                               final place = places[index];
 
-                              return GestureDetector(
+                              return InkWell(
                                 onTap: () {
                                   widget.onSelectLocation(place);
                                   Navigator.pop(context);
@@ -103,23 +105,22 @@ class PickLocationDialogState extends State<PickLocationDialog> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
-                                        colors: cardGradient,
-                                        begin: Alignment.topLeft,
+                                        colors: AppTheme.cardGradient,
+                                        begin: Alignment.center,
                                         end: Alignment.bottomRight,
                                       ),
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(
+                                        AppTheme.s8,
+                                      ),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             place.displayName,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
+                                            style: tStyle.titleMedium,
                                           ),
                                           Text(place.formattedAddress),
                                         ],

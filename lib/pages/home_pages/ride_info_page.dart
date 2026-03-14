@@ -1,5 +1,5 @@
+import 'package:carpool_training/app_theme.dart';
 import 'package:carpool_training/modules/ride.dart';
-import 'package:carpool_training/style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,12 +32,14 @@ class _RideInfoPageState extends State<RideInfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final tStyle = Theme.of(context).textTheme;
+
     return Scaffold(
-      appBar: uniPoolAppBar(appBarTitle: "Ride Info"),
+      appBar: AppBar(title: Text('Ride Info')),
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(AppTheme.s16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -54,44 +56,36 @@ class _RideInfoPageState extends State<RideInfoPage> {
                   ),
                 ),
 
-                SizedBox(height: 10),
+                SizedBox(height: AppTheme.s12),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       widget.ride.driver.vehicle.carModel,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 32,
-                      ),
+                      style: tStyle.headlineSmall,
                     ),
                     Text(
                       'Car Plate : ${widget.ride.driver.vehicle.carPlate}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                      style: tStyle.titleMedium,
                     ),
                   ],
                 ),
 
-                Text(
-                  'Date And Time to Move',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
+                Text('Date And Time to Move', style: tStyle.titleMedium),
                 Text(
                   DateFormat(
                     'EEEE, dd/MM/yyyy HH:mm',
                   ).format(widget.ride.dateTime),
+                  style: tStyle.bodyMedium,
                 ),
 
-                SizedBox(height: 20),
+                SizedBox(height: AppTheme.s24),
 
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(AppTheme.s8),
                       child: Column(
                         children: [
                           Icon(
@@ -115,39 +109,25 @@ class _RideInfoPageState extends State<RideInfoPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Origin',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                              color: Colors.lightGreen[600],
-                            ),
-                          ),
+                          Text('Origin', style: tStyle.titleLarge),
                           Text(
                             widget.ride.origin['name'],
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                            style: tStyle.labelLarge,
                           ),
-                          Text(widget.ride.origin['address']),
-                          SizedBox(height: 20),
                           Text(
-                            'Destination',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                              color: Colors.lightGreen[600],
-                            ),
+                            widget.ride.origin['address'],
+                            style: tStyle.bodySmall,
                           ),
+                          SizedBox(height: AppTheme.s24),
+                          Text('Destination', style: tStyle.titleLarge),
                           Text(
                             widget.ride.destination['name'],
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                            style: tStyle.labelLarge,
                           ),
-                          Text(widget.ride.destination['address']),
+                          Text(
+                            widget.ride.destination['address'],
+                            style: tStyle.bodySmall,
+                          ),
                         ],
                       ),
                     ),
@@ -155,21 +135,14 @@ class _RideInfoPageState extends State<RideInfoPage> {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: Text(
-                    'Special Features',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.lightGreen[600],
-                    ),
-                  ),
+                  padding: const EdgeInsets.only(top: AppTheme.s16),
+                  child: Text('Special Features', style: tStyle.titleLarge),
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(vertical: AppTheme.s12),
                   child: SizedBox(
-                    height: 40,
+                    height: AppTheme.s40,
                     width: double.infinity,
                     child: ListView.builder(
                       itemCount:
@@ -180,28 +153,11 @@ class _RideInfoPageState extends State<RideInfoPage> {
                             widget.ride.driver.vehicle.specialFeatures[index];
 
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: cardGradient,
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              border: BoxBorder.all(
-                                color: Colors.lightGreen[200]!,
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                feature,
-                                style: TextStyle(color: Colors.green[900]),
-                              ),
-                            ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.s8,
+                          ),
+                          child: Chip(
+                            label: Text(feature, style: tStyle.bodyMedium),
                           ),
                         );
                       },
@@ -241,12 +197,6 @@ class _RideInfoPageState extends State<RideInfoPage> {
                         );
                       }
                     },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(300, 30),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(4),
-                      ),
-                    ),
                     child: Text('Join the Ride'),
                   ),
                 ),
