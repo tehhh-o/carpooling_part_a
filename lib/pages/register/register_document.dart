@@ -269,23 +269,16 @@ class _RegisterDocumentState extends State<RegisterDocument> {
                           await uploadDocumentsToDb();
                           setState(() => isLoading = false);
                           if (context.mounted) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text("Success"),
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
                                 content: Text(
-                                  "All information submitted successfully.",
+                                  'All Information Submitted Sucessfully.',
                                 ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.push(
-                                      context,
-                                      SlideFadeRoute(page: RegisterVehicle()),
-                                    ),
-                                    child: Text("Next Step"),
-                                  ),
-                                ],
                               ),
+                            );
+                            Navigator.push(
+                              context,
+                              SlideFadeRoute(page: RegisterVehicle()),
                             );
                           }
                         }

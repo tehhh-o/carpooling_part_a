@@ -15,7 +15,7 @@ class AllRidesPage extends StatefulWidget {
 }
 
 class _AllRidesPageState extends State<AllRidesPage> {
-  Future<List<Ride>>? futureRides;
+  Stream<List<Ride>>? streamRides;
   String selectedFilter = 'All Rides';
 
   Future<String> getProfilePicUrl(String userId) async {
@@ -28,25 +28,42 @@ class _AllRidesPageState extends State<AllRidesPage> {
     return profilePicUrl;
   }
 
-  Future<List<Ride>> getRides() async {
-    final rideData = await FirebaseFirestore.instance.collection('rides').get();
+  // Future<List<Ride>> getRides() async {
+  //   final rideData = await FirebaseFirestore.instance.collection('rides').get();
 
-    final rides = await Future.wait(
-      rideData.docs.map((rideDoc) async {
-        final driverDoc = await FirebaseFirestore.instance
-            .collection('driver')
-            .doc(rideDoc.data()['driverUid'])
-            .get();
+  //   final rides = await Future.wait(
+  //     rideData.docs.map((rideDoc) async {
+  //       final driverDoc = await FirebaseFirestore.instance
+  //           .collection('driver')
+  //           .doc(rideDoc.data()['driverUid'])
+  //           .get();
 
-        return Ride.fromJson(rideDoc.data(), driverDoc.data()!, rideDoc.id);
-      }).toList(),
-    );
-    return rides;
+  //       return Ride.fromJson(rideDoc.data(), driverDoc.data()!, rideDoc.id);
+  //     }).toList(),
+  //   );
+  //   return rides;
+  // }
+
+  Stream<List<Ride>> getStreamRides() {
+    return FirebaseFirestore.instance.collection('rides').snapshots().asyncMap((
+      rideSnapshot,
+    ) async {
+      final rides = await Future.wait(
+        rideSnapshot.docs.map((rideDoc) async {
+          final driverDoc = await FirebaseFirestore.instance
+              .collection('driver')
+              .doc(rideDoc.data()['driverUid'])
+              .get();
+          return Ride.fromJson(rideDoc.data(), driverDoc.data()!, rideDoc.id);
+        }).toList(),
+      );
+      return rides;
+    });
   }
 
   @override
   void initState() {
-    futureRides = getRides();
+    streamRides = getStreamRides();
     super.initState();
   }
 
@@ -78,19 +95,11 @@ class _AllRidesPageState extends State<AllRidesPage> {
                   });
                 },
               ),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    futureRides = getRides();
-                  });
-                },
-                icon: Icon(Icons.refresh, size: AppTheme.s24),
-              ),
             ],
           ),
 
-          FutureBuilder(
-            future: futureRides,
+          StreamBuilder(
+            stream: streamRides,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
@@ -105,6 +114,16 @@ class _AllRidesPageState extends State<AllRidesPage> {
                 }
                 return r.status == false;
               }).toList();
+
+              if (rides.isEmpty) {
+                return Padding(
+                  padding: EdgeInsetsGeometry.all(AppTheme.s8),
+                  child: Text(
+                    'You haven\'t created any rides yet.\nCreate one to see your rides. ',
+                    style: tStyle.titleMedium,
+                  ),
+                );
+              }
 
               return Expanded(
                 child: ListView.builder(
@@ -259,7 +278,6 @@ class _AllRidesPageState extends State<AllRidesPage> {
                                               right: AppTheme.s4,
                                             ),
                                             child: CircleAvatar(
-                                              backgroundColor: Colors.grey[300],
                                               child: Icon(
                                                 Icons.person_2_outlined,
                                               ),

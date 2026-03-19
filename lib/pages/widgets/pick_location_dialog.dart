@@ -105,7 +105,7 @@ class PickLocationDialogState extends State<PickLocationDialog> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
-                                        colors: AppTheme.cardGradient,
+                                        colors: AppTheme.gradient(context),
                                         begin: Alignment.center,
                                         end: Alignment.bottomRight,
                                       ),

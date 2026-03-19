@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:carpool_training/app_theme.dart';
-import 'package:carpool_training/pages/login_page.dart';
+import 'package:carpool_training/main.dart';
 import 'package:carpool_training/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -102,227 +102,225 @@ class _RegisterVehicleState extends State<RegisterVehicle> {
           ),
 
           body: Center(
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16.0,
-                        horizontal: 32,
-                      ),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 10),
-                          vehicleImage == null
-                              ? Container(
-                                  color: Colors.grey[350],
-                                  height: 130,
-                                  width: 250,
-                                )
-                              : Image.file(
-                                  vehicleImage!,
-                                  height: 130,
-                                  width: 250,
-                                ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: AppTheme.s8,
-                            ),
-                            child: Text(
-                              "Vehicle Image",
-                              style: tStyle.titleMedium,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    await pickImage(ImageSource.camera);
-                                  },
-                                  child: Text("Pick from Camera"),
-                                ),
-                              ),
-                              SizedBox(width: AppTheme.s12),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    await pickImage(ImageSource.gallery);
-                                  },
-                                  child: Text("Pick from Gallery"),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: AppTheme.s40),
-                          Form(
-                            key: formKey,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  controller: carModelController,
-                                  decoration: InputDecoration(
-                                    hintText: "Car Model",
-                                    hintStyle: tStyle.bodySmall,
-                                    prefixIcon: Icon(Icons.directions_car),
+            child: Padding(
+              padding: const EdgeInsets.all(AppTheme.s16),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppTheme.s16,
+                          horizontal: AppTheme.s8,
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: AppTheme.s12),
+                            vehicleImage == null
+                                ? Container(
+                                    color: Colors.grey[350],
+                                    height: 130,
+                                    width: 250,
+                                  )
+                                : Image.file(
+                                    vehicleImage!,
+                                    height: 130,
+                                    width: 250,
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Please enter the car model";
-                                    }
-                                    return null;
-                                  },
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: AppTheme.s8,
+                              ),
+                              child: Text(
+                                "Vehicle Image",
+                                style: tStyle.titleMedium,
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      await pickImage(ImageSource.camera);
+                                    },
+                                    child: Text("Pick from Camera"),
+                                  ),
                                 ),
-                                SizedBox(height: AppTheme.s12),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          controller: carPlateController,
-                                          decoration: InputDecoration(
-                                            hintText: "Car Plate",
-                                            hintStyle: tStyle.bodySmall,
-                                            prefixIcon: Icon(
-                                              Icons.app_registration,
-                                            ),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return "Please enter the car Plate";
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                      ),
-                                      SizedBox(width: AppTheme.s12),
-                                      Expanded(
-                                        child: TextFormField(
-                                          controller: sittingCapacityController,
-                                          decoration: InputDecoration(
-                                            hintText: "Capacity",
-                                            hintStyle: tStyle.bodySmall,
-                                            prefixIcon: Icon(Icons.people),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return "Please enter the sitting capacity";
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                      ),
-                                    ],
+                                SizedBox(width: AppTheme.s12),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      await pickImage(ImageSource.gallery);
+                                    },
+                                    child: Text("Pick from Gallery"),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          SizedBox(height: AppTheme.s40),
-
-                          Align(
-                            alignment: AlignmentGeometry.bottomLeft,
-                            child: Text(
-                              "Additonal Features: ",
-                              style: tStyle.titleMedium,
-                            ),
-                          ),
-
-                          SizedBox(
-                            height: 200,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: AppTheme.s8,
+                            SizedBox(height: AppTheme.s40),
+                            Form(
+                              key: formKey,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    controller: carModelController,
+                                    decoration: InputDecoration(
+                                      hintText: "Car Model",
+                                      hintStyle: tStyle.bodySmall,
+                                      prefixIcon: Icon(Icons.directions_car),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Please enter the car model";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(height: AppTheme.s12),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller: carPlateController,
+                                            decoration: InputDecoration(
+                                              hintText: "Car Plate",
+                                              hintStyle: tStyle.bodySmall,
+                                              prefixIcon: Icon(
+                                                Icons.app_registration,
+                                              ),
+                                            ),
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "Please enter the car Plate";
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(width: AppTheme.s12),
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller:
+                                                sittingCapacityController,
+                                            decoration: InputDecoration(
+                                              hintText: "Capacity",
+                                              hintStyle: tStyle.bodySmall,
+                                              prefixIcon: Icon(Icons.people),
+                                            ),
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "Please enter the sitting capacity";
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              child: Scrollbar(
-                                controller: scrollbarController,
-                                thumbVisibility: true,
-                                child: ListView.builder(
+                            ),
+                            SizedBox(height: AppTheme.s40),
+
+                            Align(
+                              alignment: AlignmentGeometry.bottomLeft,
+                              child: Text(
+                                "Additonal Features: ",
+                                style: tStyle.titleMedium,
+                              ),
+                            ),
+
+                            SizedBox(
+                              height: 200,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: AppTheme.s8,
+                                ),
+                                child: Scrollbar(
                                   controller: scrollbarController,
-                                  itemCount: features.length,
-                                  itemBuilder: (context, index) {
-                                    final entry = features.entries
-                                        .toList()[index];
-                                    return Card(
-                                      child: CheckboxListTile(
-                                        title: Text(entry.key),
-                                        value: entry.value,
-                                        onChanged: (val) => setState(() {
-                                          features[entry.key] = val ?? false;
-                                        }),
-                                      ),
-                                    );
-                                  },
+                                  thumbVisibility: true,
+                                  child: ListView.builder(
+                                    controller: scrollbarController,
+                                    itemCount: features.length,
+                                    itemBuilder: (context, index) {
+                                      final entry = features.entries
+                                          .toList()[index];
+                                      return Card(
+                                        child: CheckboxListTile(
+                                          title: Text(entry.key),
+                                          value: entry.value,
+                                          onChanged: (val) => setState(() {
+                                            features[entry.key] = val ?? false;
+                                          }),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: AppTheme.s40),
-                        ],
+                            SizedBox(height: AppTheme.s40),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                Hero(
-                  tag: 'register_submit_button',
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppTheme.s4),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (vehicleImage == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Please upload the vehicle image'),
-                            ),
-                          );
-                        }
-                        if (formKey.currentState!.validate()) {
-                          setState(() => isLoading = true);
-                          await updateVehicleToDb();
-                          setState(() => isLoading = false);
-                          if (context.mounted) {
-                            return showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text(
-                                    'All Information Submitted Successfully',
-                                  ),
-                                  content: Text(
-                                    'Account Created successfully, Proceed to Login.',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () async {
-                                        await FirebaseAuth.instance.signOut();
-                                        setState(() {
-                                          Navigator.pushAndRemoveUntil(
-                                            context,
-                                            SlideFadeRoute(page: LoginPage()),
-                                            (route) => false,
-                                          );
-                                        });
-                                      },
-                                      child: Text('Go to Login'),
-                                    ),
-                                  ],
-                                );
-                              },
+                  Hero(
+                    tag: 'register_submit_button',
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppTheme.s4),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (vehicleImage == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Please upload the vehicle image',
+                                ),
+                              ),
                             );
                           }
-                        }
-                      },
-                      child: Text("Submit"),
+                          if (formKey.currentState!.validate()) {
+                            setState(() => isLoading = true);
+                            await updateVehicleToDb();
+                            setState(() => isLoading = false);
+                            if (context.mounted) {
+                              await FirebaseAuth.instance.signOut();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Account Created Sucessfully. Proceed to Login.",
+                                  ),
+                                  duration: Duration(
+                                    seconds: 1,
+                                    milliseconds: 500,
+                                  ),
+                                ),
+                              );
+
+                              await Future.delayed(
+                                Duration(seconds: 1, milliseconds: 500),
+                              );
+                              Navigator.of(context).pushAndRemoveUntil(
+                                SlideFadeRoute(page: MyApp()),
+                                (route) => false,
+                              );
+                            }
+                          }
+                        },
+                        child: Text("Submit"),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

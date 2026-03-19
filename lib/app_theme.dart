@@ -220,8 +220,19 @@ class AppTheme {
     ),
   );
 
-  static const List<Color> cardGradient = [
+  static const List<Color> gradientLight = [
     Color.fromARGB(255, 251, 255, 248),
     Color.fromRGBO(220, 237, 200, 1),
   ];
+
+  static const List<Color> gradientDark = [
+    Color.fromARGB(255, 30, 35, 28),
+    Color.fromARGB(255, 45, 55, 38),
+  ];
+
+  static List<Color> gradient(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? gradientDark
+        : gradientLight;
+  }
 }

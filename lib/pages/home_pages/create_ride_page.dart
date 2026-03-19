@@ -97,7 +97,7 @@ class _CreateRidePageState extends State<CreateRidePage> {
                       border: BoxBorder.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(AppTheme.r8),
                       gradient: LinearGradient(
-                        colors: AppTheme.cardGradient,
+                        colors: AppTheme.gradient(context),
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),

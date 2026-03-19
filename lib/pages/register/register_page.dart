@@ -16,6 +16,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool isLoading = false;
+  bool showPassword = false;
   final formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController icController = TextEditingController();
@@ -24,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
 
   Future<void> createUserWithEmailAndPassword() async {
     try {
@@ -270,10 +272,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: AppTheme.r16),
+                              SizedBox(height: AppTheme.s16),
                               TextFormField(
                                 controller: passwordController,
-                                obscureText: true,
+                                obscureText: !showPassword,
                                 decoration: InputDecoration(
                                   label: Text(
                                     "Password",
@@ -288,6 +290,49 @@ class _RegisterPageState extends State<RegisterPage> {
                                   prefixIcon: Icon(
                                     Icons.password,
                                     color: Colors.black,
+                                  ),
+                                  suffixIcon: InkWell(
+                                    onTapDown: (_) => setState(() {
+                                      showPassword = showPassword
+                                          ? false
+                                          : true;
+                                    }),
+                                    child: Icon(Icons.remove_red_eye),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your Password';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: AppTheme.s16),
+                              TextFormField(
+                                controller: confirmPasswordController,
+                                obscureText: !showPassword,
+                                decoration: InputDecoration(
+                                  label: Text(
+                                    "Confirm Password",
+                                    style: tStyle.titleMedium,
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  hint: Text(
+                                    "Enter your Password Again",
+                                    style: tStyle.bodySmall,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.password,
+                                    color: Colors.black,
+                                  ),
+                                  suffixIcon: InkWell(
+                                    onTapDown: (_) => setState(() {
+                                      showPassword = showPassword
+                                          ? false
+                                          : true;
+                                    }),
+                                    child: Icon(Icons.remove_red_eye),
                                   ),
                                 ),
                                 validator: (value) {
@@ -329,33 +374,31 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          setState(() => isLoading = true);
-                          await createUserWithEmailAndPassword();
-                          await uploadUserInfoToDb();
-                          setState(() => isLoading = false);
-                          if (context.mounted) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("Success"),
-                                  content: Text(
-                                    'All information submitted succssfully',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.push(
-                                        context,
-                                        SlideFadeRoute(
-                                          page: RegisterDocument(),
-                                        ),
-                                      ),
-                                      child: Text('Next Step'),
-                                    ),
-                                  ],
-                                );
-                              },
+                          if (passwordController.text.trim() !=
+                              confirmPasswordController.text.trim()) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Password does not match.'),
+                              ),
                             );
+                          } else {
+                            setState(() => isLoading = true);
+                            await createUserWithEmailAndPassword();
+                            await uploadUserInfoToDb();
+                            setState(() => isLoading = false);
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'All Information Submitted Sucessfully',
+                                  ),
+                                ),
+                              );
+                              Navigator.push(
+                                context,
+                                SlideFadeRoute(page: RegisterDocument()),
+                              );
+                            }
                           }
                         }
                       },
